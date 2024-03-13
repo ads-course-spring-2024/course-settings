@@ -55,6 +55,7 @@ def check_pass_tests(contest_api: ContestAPI, contest_id: int, problem_alias: st
         if submit["problemAlias"] == problem_alias and submit["verdict"] == "OK":
             submission_id = submit["id"]
             print(f"Submission candidate: https://contest.yandex.ru/contest/{contest_id}/run-report/{submission_id}/")
+            break
     if submission_id is None:
         raise CheckerError("Submission candidate not found")
     submission_source = contest_api.get_submission_source(contest_id, submission_id)
