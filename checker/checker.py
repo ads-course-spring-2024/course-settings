@@ -27,7 +27,7 @@ def security_stage(course_config):
     if contest_info is None:
         raise CheckerError(f"Contest with name {branch_data[0]} not found in config")
     
-    if problem_alias not in course_config["tasks_for_review"]:
+    if problem_alias not in contest_info["tasks_for_review"]:
         raise CheckerError(f"Task {problem_alias} is not for review for contest {contest_info['id']}")
     return contest_info, problem_alias
 
