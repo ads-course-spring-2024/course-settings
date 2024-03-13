@@ -9,6 +9,8 @@ def main():
 
     contest_api = ContestAPI(student_config["token"])
     contest_info, problem_alias = checker.security_stage(course_config)
+    contest_id = contest_info["yandex_contest_id"]
+    contest_alias = "contest" + str(contest_info["id"])
     
     checker.check_linter()
     checker.check_deadline_met(contest_api, contest_id, problem_alias)

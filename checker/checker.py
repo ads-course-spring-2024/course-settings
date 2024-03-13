@@ -12,7 +12,7 @@ def security_stage(course_config):
         raise CheckerError("Branch name not set")
     print(f"Branch name is {branch_name}")
     branch_data = branch_name.split("_")
-    if len(branch_name) != 2:
+    if len(branch_data) != 2:
         raise CheckerError(f"Branch name not match format: {branch_name}")
     print(f"Contest alias is {branch_data[0]}")
     print(f"Task alias is {branch_data[1]}")
