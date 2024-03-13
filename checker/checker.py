@@ -71,6 +71,7 @@ def check_linter(filename: str):
     extra_compile_flags = "-nostdinc++ -nostdlib++ -isystem libcxx/c++ -isystem libcxx/x86_64-unknown-linux-gnu"
     check_line = f'clang-tidy --config-file=clang-tidy.json -quiet -extra-arg=-std=c++20 {filename} -- {extra_compile_flags} 1>tidy_log.txt'
     return_code = subprocess.run(check_line, shell=True).returncode
+    print(f"Linter returned with code {return_code}")
     if return_code != 0 or os.stat('tidy_log.txt').st_size > 0:
         print("Linter failed")
         with open("tidy_log.txt") as tidy_log:
