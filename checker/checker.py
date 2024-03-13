@@ -6,18 +6,30 @@ class CheckerError(RuntimeError):
     pass
 
 
-def security_stage():
+def security_stage(course_config):
     branch_name = os.environ.get("GITHUB_HEAD_REF")
     if branch_name is None:
         raise CheckerError("Branch name not set")
     print(f"Branch name is {branch_name}")
     branch_data = branch_name.split("_")
     if len(branch_name) != 2:
-        raise CheckerError("Branch name not match format")
+        raise CheckerError(f"Branch name not match format: {branch_name}")
     print(f"Contest alias is {branch_data[0]}")
     print(f"Task alias is {branch_data[1]}")
     # TODO: check one specific file changed
-    return branch_data[0], branch_data[1]
+
+    problem_alias = branch_data[1][-1]
+    contest_info = None
+    for contest in course_config:
+        if contest["id"] == int(branch_data[0][-1]):
+            contest_info = contest
+    
+    if contest_info is None:
+        raise CheckerError(f"Contest with name {branch_data[0]} not found in config")
+    
+    if problem_alias not in course_config["tasks_for_review"]:
+        raise CheckerError(f"Task {problem_alias} is not for review for contest {contest_info['id']}")
+    return contest_info, problem_alias
 
 
 def check_deadline_met(contest_api: ContestAPI, contest_id: int, problem_alias: str):
