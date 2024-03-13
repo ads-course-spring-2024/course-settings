@@ -69,7 +69,7 @@ def check_pass_tests(contest_api: ContestAPI, contest_id: int, problem_alias: st
 def check_linter(filename: str):
     print("Linter enabled")
     extra_compile_flags = "-nostdinc++ -nostdlib++ -isystem libcxx/c++ -isystem libcxx/x86_64-unknown-linux-gnu"
-    check_line = f'clang-tidy --config-file=clang-tidy.json -quiet -extra-arg=-std=c++20 {filename} -- {extra_compile_flags} 1>tidy_log.txt 2>/dev/null'
+    check_line = f'clang-tidy --config-file=clang-tidy.json -quiet -extra-arg=-std=c++20 {filename} -- {extra_compile_flags} 1>tidy_log.txt'
     return_code = subprocess.run(check_line, shell=True).returncode
     if return_code != 0 or os.stat('tidy_log.txt').st_size > 0:
         print("Linter failed")
