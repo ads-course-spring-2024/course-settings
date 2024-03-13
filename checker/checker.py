@@ -1,0 +1,57 @@
+import os
+from contest_api import ContestAPI
+
+
+class CheckerError(RuntimeError):
+    pass
+
+
+def security_stage():
+    branch_name = os.environ.get("GITHUB_HEAD_REF")
+    if branch_name is None:
+        raise CheckerError("Branch name not set")
+    print(f"Branch name is {branch_name}")
+    branch_data = branch_name.split("_")
+    if len(branch_name) != 2:
+        raise CheckerError("Branch name not match format")
+    print(f"Contest alias is {branch_data[0]}")
+    print(f"Task alias is {branch_data[1]}")
+    # TODO: check one specific file changed
+    return branch_data[0], branch_data[1]
+
+
+def check_deadline_met(contest_api: ContestAPI, contest_id: int, problem_alias: str):
+    standings = contest_api.get_standings(contest_id)
+    task_index = 0
+    for task in standings["titles"]:
+        if task["title"] == problem_alias:
+            print(f"For task {task['name']} with alias {problem_alias} index is {task_index}")
+            break
+        else:
+            task_index += 1
+    task_info = standings["rows"][0]["problemResults"][task_index]
+    if task_info["status"] != "ACCEPTED":
+        raise CheckerError(f"Deadline for {problem_alias} not met")
+    print("Check deadline met OK")
+
+
+def check_pass_tests(contest_api: ContestAPI, contest_id: int, problem_alias: str, contest_alias: str):
+    submissions = contest_api.get_all_submissions(contest_id)["submissions"]
+    submission_id = None
+    for submit in submissions:
+        if submit["problemAlias"] == problem_alias and submit["verdict"] == "OK":
+            submission_id = submit["id"]
+            print(f"Submission candidate: https://contest.yandex.ru/contest/{contest_id}/run-report/{submission_id}/")
+    if submission_id is None:
+        raise CheckerError("Submission candidate not found")
+    submission_source = contest_api.get_submission_source(contest_id, submission_id)
+    github_filename = f"{contest_alias}/{problem_alias}.cpp"
+    print(f"Checking for {github_filename}")
+    with open(github_filename) as f:
+        if submission_source.strip().splitlines() != f.read().strip().splitlines():
+            raise CheckerError("Submission content differs from repo content")
+    print("Check pass tests OK")
+
+
+def check_linter():
+    print("Linter disabled")
