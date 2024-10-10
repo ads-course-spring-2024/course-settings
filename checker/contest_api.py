@@ -38,4 +38,4 @@ class ContestAPI:
         response.raise_for_status()
         start_date_str = response.json()["startTime"].replace("Z", "+00:00")
         start_date = datetime.datetime.fromisoformat(start_date_str)
-        return start_date + response.json()["duration"]
+        return start_date + datetime.timedelta(seconds=response.json()["duration"])
