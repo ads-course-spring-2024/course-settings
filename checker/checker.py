@@ -20,9 +20,10 @@ def security_stage(course_config):
     # TODO: check one specific file changed
 
     problem_alias = branch_data[1][-1]
+    contest_id = int(branch_data[0][len("contest"):])
     contest_info = None
     for contest in course_config:
-        if contest["id"] == int(branch_data[0][-1]):
+        if contest["id"] == contest_id:
             contest_info = contest
     
     if contest_info is None:
