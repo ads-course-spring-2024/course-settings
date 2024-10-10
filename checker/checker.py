@@ -51,7 +51,7 @@ def check_deadline_met(contest_api: ContestAPI, contest_id: int, problem_alias: 
 
 
 def check_pass_tests(contest_api: ContestAPI, contest_id: int, problem_alias: str, contest_alias: str):
-    submissions = contest_api.get_all_submissions(contest_id)["submissions"]
+    submissions = contest_api.get_all_submissions(contest_id)
     submission_id = None
     for submit in submissions:
         if submit["problemAlias"] == problem_alias and submit["verdict"] == "OK":
