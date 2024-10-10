@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 from contest_api import ContestAPI
@@ -35,18 +36,18 @@ def security_stage(course_config):
 
 
 def check_deadline_met(contest_api: ContestAPI, contest_id: int, problem_alias: str):
-    standings = contest_api.get_standings(contest_id)
-    task_index = 0
-    for task in standings["titles"]:
-        if task["title"] == problem_alias:
-            print(f"For task {task['name']} with alias {problem_alias} index is {task_index}")
-            break
-        else:
-            task_index += 1
-    task_info = standings["rows"][0]["problemResults"][task_index]
-    if task_info["status"] != "ACCEPTED":
-        raise CheckerError(f"Deadline for {problem_alias} not met")
-    print("Check deadline met OK")
+    deadline = contest_api.get_deadline(contest_id)
+    submissions = contest_api.get_all_submissions(contest_id)
+    for submission in submissions:
+        if submission["problemAlias"] == problem_alias and submission["verdict"] == "OK":
+            time_str = submission["submissionTime"].replace("Z", "+00:00")
+            time = datetime.datetime.fromisoformat(time_str)
+            if time < deadline:
+                print("Check deadline met OK")
+                return
+
+    raise CheckerError(f"Deadline for {problem_alias} not met")
+    
 
 
 def check_pass_tests(contest_api: ContestAPI, contest_id: int, problem_alias: str, contest_alias: str):
