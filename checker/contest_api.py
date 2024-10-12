@@ -16,8 +16,9 @@ class ContestAPI:
         while True:
             response = self._session.get(self.api_root + f"/contests/{contest_id}/submissions", params={"page": i, "pageSize": 100})
             response.raise_for_status()
-            result += response.json()["submissions"]
-            if response.json()["count"] < 100:
+            submissions = response.json()["submissions"]
+            result += submisions
+            if len(submissions) == 0:
                 break
             i += 1
         return result
