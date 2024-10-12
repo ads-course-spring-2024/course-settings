@@ -17,7 +17,7 @@ class ContestAPI:
             response = self._session.get(self.api_root + f"/contests/{contest_id}/submissions", params={"page": i, "pageSize": 100})
             response.raise_for_status()
             submissions = response.json()["submissions"]
-            result += submisions
+            result += submissions
             if len(submissions) == 0:
                 break
             i += 1
