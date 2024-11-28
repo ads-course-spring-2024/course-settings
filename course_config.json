@@ -33,5 +33,10 @@
         "id": 12,
         "yandex_contest_id": 70176,
         "tasks_for_review": ["D", "E", "F", "I"]
+    },
+    {
+        "id": 13,
+        "yandex_contest_id": 71205,
+        "tasks_for_review": ["H", "J", "L"]
     }
 ]
